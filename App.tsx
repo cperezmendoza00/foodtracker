@@ -1,20 +1,44 @@
+import { useState } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { AppRegistry, } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as ReduxProvider } from 'react-redux'
+import { NavigationContainer } from '@react-navigation/native'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { lang, LocaleProvider } from './src/utils/LocaleContext';
+import { expo } from './app.json';
+import { store } from './src/store/store'
+import Home from './src/pages/Home'
+import Config from './src/pages/Config'
+
+type RootStackParamList = {
+  Home: undefined
+  Config: undefined
+};
+
+const Drawer = createDrawerNavigator<RootStackParamList>()
 
 export default function App() {
+
+  const [appData, setAppData] = useState(
+    lang.en
+  );
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <LocaleProvider value={appData}>
+      <ReduxProvider store={store}>
+        <PaperProvider>
+          <NavigationContainer>
+            <Drawer.Navigator>
+              <Drawer.Screen name='Home' component={Home} />
+              <Drawer.Screen name='Config' component={Config} />
+            </Drawer.Navigator>
+          </NavigationContainer>
+          <StatusBar style='auto' />
+        </PaperProvider>
+      </ReduxProvider>
+    </LocaleProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+AppRegistry.registerComponent(expo.name, () => App);
