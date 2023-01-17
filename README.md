@@ -4,7 +4,8 @@ Mobile app in progress to track/count calories, based on [(ionic version)](https
 
 ## History:
 
-After using the ioinc version for years, In 2022 I decided to refactor the app using react native to make the app to work not just in Androud but IOS too
+After using the ioinc version for years, In 2022 I decided to refactor the app using react native to be able to use it no only in Android but IOS.
 
 ## Details:
 - Stack: TypeScript, React Native, Paper
+- Database: Firebase Realtime (cloud-hosted NoSQL database)
