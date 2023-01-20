@@ -3,32 +3,17 @@ import { Item } from '../types'
 const db = 'https://foodtracker-2bf66-default-rtdb.firebaseio.com'
 const document = 'users'
 
-export const requestAddItem = () => {
-  /*
-  axios.post(
-    //'https://foodtracker-2bf66-default-rtdb.firebaseio.com/users.json',
-    'https://foodtracker-2bf66-default-rtdb.firebaseio.com/users/-NKUMEKM4dGs1DgPfwQe/items.json',
-    {
-      //name: 'cadukeson@gmail.com',
-      name: 'Chocolate chips',
-      portions: 0,
-      gramsPerPortion: 15,
-      details: '15g',
-      info: {
-        protein: 1,
-        fat: 7,
-        carb: 7,
-      }
-
-    }
-  )
-  */
+export const postItem = async (userId: string, item: Omit<Item, 'id'>) => {
+  const url = `${db}/${document}/${userId}/items/.json`
+  const response = await axios.post(url, item)
+  return response
 }
 
 
-export const updateItem = (id: string, item: Item) => {
-  //const url = `${db}/${document}/${user_id}/items/${id}/.json`
-  //axios.patch(url, item)
+export const patchItem = async (userId: string, item: Item) => {
+  const url = `${db}/${document}/${userId}/items/${item.id}/.json`
+  const response = await axios.post(url, item)
+  return response
 }
 
 export const fetchItems = async (userId: string) => {

@@ -4,6 +4,7 @@ export const lang = {
   en: {
     value: 'English',
     save: 'Save',
+    cancel: 'Cancel',
     addItem: 'Add Food',
     config: {
       basicInfo: 'Set the values below to start',
@@ -22,11 +23,21 @@ export const lang = {
       gramI: 'G',
       proteinI: 'P',
       caloriesI: 'K',
-    }
+    },
+    addItemForm: {
+      title: 'Adding Item',
+      name: 'Name',
+      gramsPerPortion: 'Grams per portion',
+      description: 'Description',
+    },
+    closeSnackbar: 'close',
+    errorFetchingItem: 'There was a problem fetching the items',
+    errorAddingItem: 'There was a problem adding the item, try again',
   },
   es: {
     value: 'Español',
     save: 'Guardar',
+    cancel: 'Cancelar',
     addItem: 'Agregar Alimento',
     config: {
       basicInfo: 'Ingrese los siguientes valores para comenzar',
@@ -45,7 +56,16 @@ export const lang = {
       gramI: 'G',
       proteinI: 'P',
       caloriesI: 'K',
-    }
+    },
+    addItemForm: {
+      title: 'Agregando alimento',
+      name: 'Nombre',
+      gramsPerPortion: 'Gramos por porción',
+      description: 'Descripción',
+    },
+    closeSnackbar: 'Cerrar',
+    errorFetchingItem: 'No se pudo cargar los alimentos',
+    errorAddingItem: 'No se pudo guardar alimento, intente de nuevo',
   },
 };
 export const LocaleContext = React.createContext(

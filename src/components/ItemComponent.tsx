@@ -1,12 +1,14 @@
 import React, { useState, useContext } from 'react'
 import { StyleSheet, TextInput, View } from 'react-native';
 import { useDispatch } from 'react-redux'
-import { Text, IconButton } from 'react-native-paper';
+import { Text, IconButton, TouchableRipple } from 'react-native-paper';
 import { Item, IncrementPortion, ChangePortion } from '../types';
 import { globalStyles } from '../ui/globalStyles'
 import { LocaleContext } from '../utils/LocaleContext';
 import { incrementPortion, changePortion } from '../store/items';
 import { getCalories, roundNumber } from '../utils/Numbers'
+import { patchItem } from '../utils/http';
+import { showModalData } from '../store/modal';
 
 interface Props {
   item: Item
@@ -32,12 +34,17 @@ export default function ItemComponent({ item }: Props) {
         setPortion((value).toString())
       }
     }
-    const payload: IncrementPortion = {
-      id: item.id,
-      operation,
-      value,
-    }
-    dispatch(incrementPortion(payload))
+
+    patchItem('-NKUMEKM4dGs1DgPfwQe', item).then(({ data }) => {
+      const payload: IncrementPortion = {
+        id: item.id,
+        operation,
+        value,
+      }
+      dispatch(incrementPortion(payload))
+    })
+
+
   }
 
   //Called onBlur or when changing the value of the portions
@@ -66,39 +73,47 @@ export default function ItemComponent({ item }: Props) {
 
   }
 
-  
+
   return (
     <View style={styles.item}>
-      <View style={[globalStyles.row]}>
-        <View style={styles.itemDetails}>
+      <View style={[globalStyles.row]} >
+
+        <TouchableRipple
+          style={styles.itemDetails}
+          onPress={() => { console.log('pressed') }}
+          onLongPress={() => { console.log('longPressed', item); dispatch(showModalData(item)) }}
+          rippleColor="rgba(0, 0, 0, .32)"
+        >
           <View>
-            <View style={styles.itemName}><Text variant='titleSmall'>{item.name}</Text></View>
-            <View style={styles.itemDescription}><Text variant='bodySmall'>{item.details}</Text></View>
+            <View>
+              <View style={styles.itemName}><Text variant='titleSmall'>{item.name}</Text></View>
+              <View style={styles.itemDescription}><Text variant='bodySmall'>{item.details}</Text></View>
+            </View>
+
+            <View style={[styles.macroDetail, globalStyles.row]}>
+              <View style={[styles.macroDetails]}>
+                <View><Text variant='labelSmall'>{appData.config.proteinI}</Text></View>
+                <View><Text variant='bodySmall'>{item.info.protein.toString()}</Text></View>
+              </View>
+
+              <View style={[styles.macroDetails]}>
+                <View><Text variant='labelSmall'>{appData.config.fatI}</Text></View>
+                <View><Text variant='bodySmall'>{item.info.fat.toString()}</Text></View>
+              </View>
+
+              <View style={[styles.macroDetails]}>
+                <View><Text variant='labelSmall'>{appData.config.carbI}</Text></View>
+                <View><Text variant='bodySmall'>{item.info.carb.toString()}</Text></View>
+              </View>
+
+              <View style={[styles.macroDetails]}>
+                <View><Text variant='labelSmall'>{appData.config.caloriesI}</Text></View>
+                <View><Text variant='bodySmall'>{getCalories(item).toString()}</Text></View>
+              </View>
+            </View>
           </View>
+        </TouchableRipple>
 
-          <View style={[styles.macroDetail, globalStyles.row]}>
-            <View style={[styles.macroDetails]}>
-              <View><Text variant='labelSmall'>{appData.config.proteinI}</Text></View>
-              <View><Text variant='bodySmall'>{item.info.protein.toString()}</Text></View>
-            </View>
-
-            <View style={[styles.macroDetails]}>
-              <View><Text variant='labelSmall'>{appData.config.fatI}</Text></View>
-              <View><Text variant='bodySmall'>{item.info.fat.toString()}</Text></View>
-            </View>
-
-            <View style={[styles.macroDetails]}>
-              <View><Text variant='labelSmall'>{appData.config.carbI}</Text></View>
-              <View><Text variant='bodySmall'>{item.info.carb.toString()}</Text></View>
-            </View>
-
-            <View style={[styles.macroDetails]}>
-              <View><Text variant='labelSmall'>{appData.config.caloriesI}</Text></View>
-              <View><Text variant='bodySmall'>{getCalories(item).toString()}</Text></View>
-            </View>
-          </View>
-
-        </View>
         <View style={[styles.columnDetails]}>
           <IconButton style={styles.iconButton} icon='plus' onPress={() => { }} />
         </View>

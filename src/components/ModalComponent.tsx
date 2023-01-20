@@ -7,12 +7,17 @@ import { LocaleContext } from '../utils/LocaleContext'
 
 interface Props {
   children: ReactElement
+  visible: boolean
 }
 
-export default function ModalComponent({ children }: Props) {
+export default function ModalComponent({ children, visible }: Props) {
 
   return (
-    <Modal visible={true} onDismiss={() => { }} contentContainerStyle={styles.modal} >
+    <Modal
+      visible={visible}
+      onDismiss={() => { }}
+      contentContainerStyle={styles.content}
+      style={styles.modal}>
       {children}
     </Modal>
   )
@@ -22,6 +27,17 @@ export default function ModalComponent({ children }: Props) {
 const styles = StyleSheet.create({
   modal: {
     backgroundColor: 'white',
-    padding: 20
+    padding: 0,
+    margin: 0
+
+  },
+  content: {
+    margin: 0,
+    padding: 0,
+    backgroundColor: 'white',
+    flex: 1,
+    //padding: 20,
+    //margin: 0
+
   }
 });

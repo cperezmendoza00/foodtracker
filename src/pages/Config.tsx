@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Card, TextInput, Text, Chip, Button } from 'react-native-paper';
 import { updateMacrosProps } from '../types'
-
 import { globalStyles } from '../ui/globalStyles'
 import { LocaleContext } from '../utils/LocaleContext';
 
@@ -81,7 +80,7 @@ export default function Config({ navigation }: any) {
 
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={globalStyles.container}>
       <Card style={styles.card}>
         <Card.Title title={appData.config.basicInfo} />
         <View style={styles.section}>
@@ -190,11 +189,6 @@ export default function Config({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    padding: 16,
-  },
   card: {
     marginBottom: 16,
   },

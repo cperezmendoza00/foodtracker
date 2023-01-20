@@ -63,6 +63,9 @@ const store = createSlice({
   name: 'items',
   initialState,
   reducers: {
+    addItem: (state, action) => {
+      state.data.push(action.payload)
+    },
     updateItems: (state, action) => {
       state.data = action.payload
     },
@@ -94,5 +97,10 @@ const store = createSlice({
   }
 })
 
-export const { incrementPortion, changePortion, updateItems } = store.actions
+export const {
+  incrementPortion,
+  changePortion,
+  updateItems,
+  addItem
+} = store.actions
 export default store.reducer
