@@ -23,6 +23,17 @@ export interface Item {
     info: Details
 }
 
+export interface UserInfo {
+    weight: number
+    calories: number
+    gramsOfProtein: number
+    fatPercentage: number
+    protein: number
+    fat: number
+    carb: number
+}
+
+
 export interface IncrementPortion {
     id: string,
     operation: 'add' | 'remove' | 'change'

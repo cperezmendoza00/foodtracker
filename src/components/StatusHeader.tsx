@@ -29,18 +29,18 @@ export default function StatusHeader() {
         <View style={[styles.macroStatus, globalStyles.row]}>
           <View style={styles.current}><Text variant='bodySmall'>{Math.floor(p)}</Text></View>
           <View style={styles.title}><Text variant='bodySmall'>{appData.config.protein.toUpperCase()}</Text></View>
-          <View style={styles.goal}><Text variant='bodySmall'>3000</Text></View>
+          <View style={styles.goal}><Text variant='bodySmall'>140</Text></View>
         </View>
         <View style={[styles.macroStatus, globalStyles.row]}>
           <View style={styles.current}><Text variant='bodySmall'>{Math.floor(f)}</Text></View>
           <View style={styles.title}><Text variant='bodySmall'>{appData.config.fat.toUpperCase()}</Text></View>
-          <View style={styles.goal}><Text variant='bodySmall'>3000</Text></View>
+          <View style={styles.goal}><Text variant='bodySmall'>100</Text></View>
         </View>
 
         <View style={[styles.macroStatus, globalStyles.row]}>
           <View style={styles.current}><Text variant='bodySmall'>{Math.floor(c)}</Text></View>
           <View style={styles.title}><Text variant='bodySmall'>{appData.config.carb.toUpperCase()}</Text></View>
-          <View style={styles.goal}><Text variant='bodySmall'>3000</Text></View>
+          <View style={styles.goal}><Text variant='bodySmall'>351</Text></View>
         </View>
 
         <View style={[styles.macroStatus, globalStyles.row]}>

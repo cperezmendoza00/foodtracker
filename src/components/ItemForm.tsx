@@ -105,14 +105,7 @@ export default function NewItemForm() {
         dispatch(showSnackbar(appData.errorAddingItem))
         setLoading(false)
       }
-
-
-
     }
-
-
-
-
   }
 
   const onCancelHandler = () => {

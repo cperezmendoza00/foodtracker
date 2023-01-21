@@ -32,6 +32,7 @@ export const lang = {
     },
     closeSnackbar: 'close',
     errorFetchingItem: 'There was a problem fetching the items',
+    errorFetchingUserInfo: 'There was a problem fetching user',
     errorAddingItem: 'There was a problem adding the item, try again',
   },
   es: {
@@ -65,6 +66,7 @@ export const lang = {
     },
     closeSnackbar: 'Cerrar',
     errorFetchingItem: 'No se pudo cargar los alimentos',
+    errorFetchingUserInfo: 'No se pudo cargar el usuario',
     errorAddingItem: 'No se pudo guardar alimento, intente de nuevo',
   },
 };

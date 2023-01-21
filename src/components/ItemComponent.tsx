@@ -8,8 +8,7 @@ import { LocaleContext } from '../utils/LocaleContext';
 import { incrementPortion, changePortion } from '../store/items';
 import { getCalories, roundNumber } from '../utils/Numbers'
 import { patchItem } from '../utils/http';
-import { showModalData } from '../store/modal';
-
+import { showModal } from '../store/modal';
 interface Props {
   item: Item
 }
@@ -81,7 +80,7 @@ export default function ItemComponent({ item }: Props) {
         <TouchableRipple
           style={styles.itemDetails}
           onPress={() => { console.log('pressed') }}
-          onLongPress={() => { console.log('longPressed', item); dispatch(showModalData(item)) }}
+          onLongPress={() => { console.log('longPressed', item); dispatch(showModal()) }}
           rippleColor="rgba(0, 0, 0, .32)"
         >
           <View>
