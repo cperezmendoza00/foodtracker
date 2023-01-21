@@ -69,37 +69,19 @@ const store = createSlice({
     updateItems: (state, action) => {
       state.data = action.payload
     },
-    incrementPortion: (state, action) => {
+    updatePortion: (state, action) => {
       state.data.map(item => {
         if (item.id === action.payload.id) {
-          if (action.payload.operation === 'add') {
-            item.portions = item.portions + 1
-          }
-          if (action.payload.operation === 'remove') {
-            if (item.portions - 1 <= 0) {
-              item.portions = 0
-            } else {
-              item.portions = item.portions - 1
-            }
-          }
+          item.portions = action.payload.value
         }
         return item
       })
     },
-    changePortion: (state, action) => {
-      state.data.map(item => {
-        if (item.id === action.payload.id) {
-          item.portions = action.payload.value
-          return item
-        }
-      })
-    }
   }
 })
 
 export const {
-  incrementPortion,
-  changePortion,
+  updatePortion,
   updateItems,
   addItem
 } = store.actions

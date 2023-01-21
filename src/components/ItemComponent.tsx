@@ -1,75 +1,122 @@
 import React, { useState, useContext } from 'react'
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, View, TextInput } from 'react-native';
 import { useDispatch } from 'react-redux'
 import { Text, IconButton, TouchableRipple } from 'react-native-paper';
 import { Item, IncrementPortion, ChangePortion } from '../types';
 import { globalStyles } from '../ui/globalStyles'
 import { LocaleContext } from '../utils/LocaleContext';
-import { incrementPortion, changePortion } from '../store/items';
+import { updatePortion } from '../store/items';
 import { getCalories, roundNumber } from '../utils/Numbers'
-import { patchItem } from '../utils/http';
+import { patchItemPortion } from '../utils/http';
 import { showModal } from '../store/modal';
+import { showSnackbar } from '../store/snackbar';
 interface Props {
   item: Item
 }
 
 export default function ItemComponent({ item }: Props) {
+  const [loading, setLoading] = useState<boolean>(false)
   const appData = useContext(LocaleContext);
-  const [portion, setPortion] = useState(item.portions.toString());
+  const [portions, setPortions] = useState(item.portions.toString());
+  const [portionsInitialValue, setPortionsInitialValue] = useState(item.portions);
   const dispatch = useDispatch()
 
   //Called when clicking on ▲ or ▼
-  const handlerIncrementPortion = (operation: IncrementPortion['operation']) => {
-    let value: number = 0
-    if (operation === 'add') {
-      value = roundNumber(item.portions + 1)
-      setPortion((value).toString())
-    }
-    if (operation === 'remove') {
-      if (item.portions - 1 <= 0) {
-        setPortion('0')
-      } else {
-        value = roundNumber(item.portions - 1)
-        setPortion((value).toString())
+  const handlerIncrementPortion = async (operation: IncrementPortion['operation']) => {
+    if (!loading) {
+      let newValue: number = 0
+      if (operation === 'add') {
+        newValue = roundNumber(item.portions + 1)
+        setPortions((newValue).toString())
       }
-    }
-
-    patchItem('-NKUMEKM4dGs1DgPfwQe', item).then(({ data }) => {
-      const payload: IncrementPortion = {
-        id: item.id,
-        operation,
-        value,
+      if (operation === 'remove') {
+        if (item.portions - 1 <= 0) {
+          newValue = roundNumber(0)
+          setPortions('0')
+        } else {
+          newValue = roundNumber(item.portions - 1)
+          setPortions((newValue).toString())
+        }
       }
-      dispatch(incrementPortion(payload))
-    })
+
+      if (newValue !== portionsInitialValue) {
+        const payload: IncrementPortion = {
+          id: item.id,
+          operation,
+          value: newValue,
+        }
+        try {
+          setLoading(true) 
+          await patchItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: newValue })
+          setPortionsInitialValue(newValue)
+          //SLEEP
+          //await new Promise(r => setTimeout(r, 2000));
+        } catch (e) {
+          dispatch(showSnackbar(appData.errorPatchingPortion))
+          dispatch(updatePortion({ ...payload, value: portionsInitialValue }))
+          setPortions(portionsInitialValue.toString())
+        }
+        dispatch(updatePortion(payload))
+        setLoading(false)
+      }
 
 
+      
+
+
+
+      
+
+    }
   }
 
-  //Called onBlur or when changing the value of the portions
-  const handlerChangePortion = (text: string) => {
-    setPortion(text.trim())
-    if (text !== '' && Number(text) >= 0) {
-      const changePortionPayload: ChangePortion = {
-        id: item.id,
-        value: Number(text)
+  //Called when typing new values (portions) on the keyboard
+  const handlerChangePortion = async (text: string) => {
+    const valueTrimmed = text.trim()
+    if (Number(valueTrimmed) >= 0 || valueTrimmed === '') {
+      setPortions(valueTrimmed)
+      if (text !== '' && Number(text) >= 0) {
+        //UPDADTE REDUX STATE Everytime there is a change
+        const changePortionPayload: ChangePortion = {
+          id: item.id,
+          value: Number(text)
+        }
+        dispatch(updatePortion(changePortionPayload))
+
       }
-      dispatch(changePortion(changePortionPayload))
     }
   }
 
-  const handlerOnBlur = () => {
-    let value: number = roundNumber(Number(portion))
-    //If it's NaN
-    if (!(Number(portion) >= 0)) {
-      handlerChangePortion(item.portions.toString())
-    } else {
-      setPortion(value.toString())
+  const handlerOnBlur = async () => {
+    if (!loading) {
+      let roundedPortions: number = roundNumber(Number(portions))
+      if (roundedPortions !== portionsInitialValue) {
+        try {
+          setLoading(true)
+          //Round value when blur
+          if ((Number(portions) >= 0)) {
+            setPortions(roundedPortions.toString())
+          }
+          //SLEEP
+          //await new Promise(r => setTimeout(r, 3000));
+          //throw new Error('errror')
+          await patchItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: roundedPortions })
+          setPortionsInitialValue(roundedPortions)
+          setLoading(false)
+        } catch (e) {
+          setLoading(false)
+          dispatch(showSnackbar(appData.errorPatchingPortion))
+          //UPDADTE REDUX STATE with original value
+          const changePortionPayload: ChangePortion = {
+            id: item.id,
+            value: portionsInitialValue
+          }
+          dispatch(updatePortion(changePortionPayload))
+          //Set value of portion with the orignal value
+          setPortions(portionsInitialValue.toString())
+        }
+      }
     }
-    if (value.toString() === '') {
-      handlerChangePortion('0')
-    }
-
   }
 
 
@@ -118,8 +165,13 @@ export default function ItemComponent({ item }: Props) {
         </View>
         <View style={[styles.columnDetails]}>
           <TextInput
-            style={[styles.portion, ...!(Number(portion) >= 0) ? [styles.portionError] : []]}
-            value={portion}
+            style={[
+              styles.portion,
+              ...!(Number(portions) >= 0) ? [styles.portionError] : [],
+              ...(loading) ? [styles.loading] : []
+            ]}
+            value={portions}
+            editable={!loading}
             onChangeText={text => handlerChangePortion(text)}
             onBlur={() => handlerOnBlur()}
             keyboardType={'numeric'}
@@ -128,12 +180,12 @@ export default function ItemComponent({ item }: Props) {
 
         </View>
         <View style={[styles.columnDetails]}>
-          <IconButton style={styles.iconButton} icon='menu-down' onPress={() => {
+          <IconButton disabled={loading} style={styles.iconButton} icon='menu-down' onPress={() => {
             handlerIncrementPortion('remove')
           }} />
         </View>
         <View style={[styles.columnDetails]}>
-          <IconButton style={styles.iconButton} icon='menu-up' onPress={() => {
+          <IconButton disabled={loading} style={styles.iconButton} icon='menu-up' onPress={() => {
             handlerIncrementPortion('add')
           }} />
         </View>
@@ -146,14 +198,17 @@ export default function ItemComponent({ item }: Props) {
 
 
 const styles = StyleSheet.create({
+  loading: {
+
+    backgroundColor: 'gray',
+
+  },
   container: {
     flex: 1,
     flexDirection: 'column',
   },
   header: {
-    borderBottomWidth: 1,
-    //minHeight: 118,
-    //paddingBottom: 16,
+    borderBottomWidth: 1
   },
   headerStatus: {
     //flex: 7 / 10,
@@ -236,6 +291,7 @@ const styles = StyleSheet.create({
 
   },
   portion: {
+    flexDirection: 'column',
     borderRadius: 4,
     backgroundColor: '#FFF',
     borderWidth: 1,
@@ -243,6 +299,8 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
   },
+
+
   portionError: {
     color: 'red',
   }

@@ -1,15 +1,16 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { StyleSheet, View } from 'react-native';
 import { Text, IconButton } from 'react-native-paper';
 import { globalStyles } from '../ui/globalStyles'
 import { LocaleContext } from '../utils/LocaleContext';
-import { Item } from '../types'
+import { Item, UserInfo } from '../types'
 
 
 export default function StatusHeader() {
 
   const appData = React.useContext(LocaleContext);
+  const userInfo: UserInfo = useSelector((state: any) => state.userInfo)
   const items = useSelector((state: any) => state.items.data)
 
   let p: number = 0;
@@ -29,24 +30,24 @@ export default function StatusHeader() {
         <View style={[styles.macroStatus, globalStyles.row]}>
           <View style={styles.current}><Text variant='bodySmall'>{Math.floor(p)}</Text></View>
           <View style={styles.title}><Text variant='bodySmall'>{appData.config.protein.toUpperCase()}</Text></View>
-          <View style={styles.goal}><Text variant='bodySmall'>140</Text></View>
+          <View style={styles.goal}><Text variant='bodySmall'>{userInfo.protein}</Text></View>
         </View>
         <View style={[styles.macroStatus, globalStyles.row]}>
           <View style={styles.current}><Text variant='bodySmall'>{Math.floor(f)}</Text></View>
           <View style={styles.title}><Text variant='bodySmall'>{appData.config.fat.toUpperCase()}</Text></View>
-          <View style={styles.goal}><Text variant='bodySmall'>100</Text></View>
+          <View style={styles.goal}><Text variant='bodySmall'>{userInfo.fat}</Text></View>
         </View>
 
         <View style={[styles.macroStatus, globalStyles.row]}>
           <View style={styles.current}><Text variant='bodySmall'>{Math.floor(c)}</Text></View>
           <View style={styles.title}><Text variant='bodySmall'>{appData.config.carb.toUpperCase()}</Text></View>
-          <View style={styles.goal}><Text variant='bodySmall'>351</Text></View>
+          <View style={styles.goal}><Text variant='bodySmall'>{userInfo.carb}</Text></View>
         </View>
 
         <View style={[styles.macroStatus, globalStyles.row]}>
           <View style={styles.current}><Text variant='bodySmall'>{Math.floor(k)}</Text></View>
           <View style={styles.title}><Text variant='bodySmall'>{appData.config.calories.toUpperCase()}</Text></View>
-          <View style={styles.goal}><Text variant='bodySmall'>3000</Text></View>
+          <View style={styles.goal}><Text variant='bodySmall'>{userInfo.calories}</Text></View>
         </View>
       </View>
       <View style={styles.headerFilter}>

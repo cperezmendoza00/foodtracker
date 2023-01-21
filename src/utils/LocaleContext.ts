@@ -34,6 +34,7 @@ export const lang = {
     errorFetchingItem: 'There was a problem fetching the items',
     errorFetchingUserInfo: 'There was a problem fetching user',
     errorAddingItem: 'There was a problem adding the item, try again',
+    errorPatchingPortion: 'There was a problem patching the portion',
   },
   es: {
     value: 'Español',
@@ -68,6 +69,7 @@ export const lang = {
     errorFetchingItem: 'No se pudo cargar los alimentos',
     errorFetchingUserInfo: 'No se pudo cargar el usuario',
     errorAddingItem: 'No se pudo guardar alimento, intente de nuevo',
+    errorPatchingPortion: 'No se pudo guardar la porción'
   },
 };
 export const LocaleContext = React.createContext(
