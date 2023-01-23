@@ -23,50 +23,43 @@ export default function ItemComponent({ item }: Props) {
 
   //Called when clicking on ▲ or ▼
   const handlerIncrementPortion = async (operation: IncrementPortion['operation']) => {
-    if (!loading) {
-      let newValue: number = 0
-      if (operation === 'add') {
-        newValue = roundNumber(item.portions + 1)
+    //if (!loading) {
+    let newValue: number = 0
+    if (operation === 'add') {
+      newValue = roundNumber(item.portions + 1)
+      setPortions((newValue).toString())
+    }
+    if (operation === 'remove') {
+      if (item.portions - 1 <= 0) {
+        newValue = roundNumber(0)
+        setPortions('0')
+      } else {
+        newValue = roundNumber(item.portions - 1)
         setPortions((newValue).toString())
       }
-      if (operation === 'remove') {
-        if (item.portions - 1 <= 0) {
-          newValue = roundNumber(0)
-          setPortions('0')
-        } else {
-          newValue = roundNumber(item.portions - 1)
-          setPortions((newValue).toString())
-        }
-      }
+    }
 
-      if (newValue !== portionsInitialValue) {
-        const payload: IncrementPortion = {
-          id: item.id,
-          operation,
-          value: newValue,
-        }
-        try {
-          setLoading(true)
-          await putItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: newValue })
-          setPortionsInitialValue(newValue)
-          //SLEEP
-          //await new Promise(r => setTimeout(r, 2000));
-        } catch (e) {
-          dispatch(showSnackbar(appData.errorPatchingPortion))
-          dispatch(updatePortion({ ...payload, value: portionsInitialValue }))
-          setPortions(portionsInitialValue.toString())
-        }
+    if (newValue !== portionsInitialValue) {
+      const payload: IncrementPortion = {
+        id: item.id,
+        operation,
+        value: newValue,
+      }
+      try {
+        setLoading(true)
+        setPortionsInitialValue(newValue)
         dispatch(updatePortion(payload))
-        setLoading(false)
+        await putItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: newValue })
+        //await new Promise(r => setTimeout(r, 2000));
+
+      } catch (e) {
+        dispatch(showSnackbar(appData.errorPatchingPortion))
+        dispatch(updatePortion({ ...payload, value: portionsInitialValue }))
+        setPortions(portionsInitialValue.toString())
       }
-
-
-
-
-
-
-
-
+      
+      setLoading(false)
+      //}
     }
   }
 
@@ -97,11 +90,12 @@ export default function ItemComponent({ item }: Props) {
           if ((Number(portions) >= 0)) {
             setPortions(roundedPortions.toString())
           }
+          
+          setPortionsInitialValue(roundedPortions)
           //SLEEP
-          //await new Promise(r => setTimeout(r, 3000));
+          //await new Promise(r => setTimeout(r, 2000));
           //throw new Error('errror')
           await putItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: roundedPortions })
-          setPortionsInitialValue(roundedPortions)
           setLoading(false)
         } catch (e) {
           setLoading(false)
@@ -127,7 +121,7 @@ export default function ItemComponent({ item }: Props) {
           style={styles.itemDetails}
           onPress={() => { }}
           onLongPress={() => { dispatch(showItemModal(item)) }}
-          //rippleColor="rgba(0, 0, 0, .32)"
+        //rippleColor="rgba(0, 0, 0, .32)"
         >
           <View>
             <View>
@@ -179,14 +173,22 @@ export default function ItemComponent({ item }: Props) {
 
         </View>
         <View style={[styles.columnDetails]}>
-          <IconButton disabled={loading} style={styles.iconButton} icon='menu-down' onPress={() => {
-            handlerIncrementPortion('remove')
-          }} />
+          <IconButton
+            //disabled={loading}
+            style={styles.iconButton}
+            icon='menu-down'
+            onPress={() => {
+              handlerIncrementPortion('remove')
+            }} />
         </View>
         <View style={[styles.columnDetails]}>
-          <IconButton disabled={loading} style={styles.iconButton} icon='menu-up' onPress={() => {
-            handlerIncrementPortion('add')
-          }} />
+          <IconButton
+            //disabled={loading}
+            style={styles.iconButton}
+            icon='menu-up'
+            onPress={() => {
+              handlerIncrementPortion('add')
+            }} />
         </View>
 
       </View>
@@ -198,9 +200,6 @@ export default function ItemComponent({ item }: Props) {
 
 const styles = StyleSheet.create({
   loading: {
-
-    backgroundColor: 'gray',
-
   },
   container: {
     flex: 1,
