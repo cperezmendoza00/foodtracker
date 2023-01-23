@@ -49,7 +49,7 @@ export default function ItemComponent({ item }: Props) {
         setLoading(true)
         setPortionsInitialValue(newValue)
         dispatch(updatePortion(payload))
-        await putItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: newValue })
+        putItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: newValue })
         //await new Promise(r => setTimeout(r, 2000));
 
       } catch (e) {

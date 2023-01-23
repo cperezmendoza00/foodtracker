@@ -9,3 +9,8 @@ After using the ioinc version for years, In 2022 I decided to refactor the app u
 ## Details:
 - Stack: TypeScript, React Native, Paper
 - Database: Firebase Realtime (cloud-hosted NoSQL database)
+
+
+## Config
+eas login                             
+Build apk: eas build -p android --profile preview
