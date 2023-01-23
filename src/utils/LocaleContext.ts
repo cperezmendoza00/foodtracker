@@ -24,8 +24,8 @@ export const lang = {
       proteinI: 'P',
       caloriesI: 'K',
     },
-    addItemForm: {
-      title: 'Adding Item',
+    itemForm: {
+      title: 'Item information',
       name: 'Name',
       gramsPerPortion: 'Grams per portion',
       description: 'Description',
@@ -33,8 +33,9 @@ export const lang = {
     closeSnackbar: 'close',
     errorFetchingItem: 'There was a problem fetching the items',
     errorFetchingUserInfo: 'There was a problem fetching user',
-    errorAddingItem: 'There was a problem adding the item, try again',
-    errorPatchingPortion: 'There was a problem patching the portion',
+    errorAddingItem: 'There was a problem adding the item',
+    errorPatchingItem: 'There was a problem updating the item',
+    errorPatchingPortion: 'There was a problem updating the portion',
   },
   es: {
     value: 'Español',
@@ -68,7 +69,8 @@ export const lang = {
     closeSnackbar: 'Cerrar',
     errorFetchingItem: 'No se pudo cargar los alimentos',
     errorFetchingUserInfo: 'No se pudo cargar el usuario',
-    errorAddingItem: 'No se pudo guardar alimento, intente de nuevo',
+    errorAddingItem: 'No se pudo guardar el alimento',
+    errorPatchingItem: 'No se pudo actualizar el alimento',
     errorPatchingPortion: 'No se pudo guardar la porción'
   },
 };

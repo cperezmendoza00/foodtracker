@@ -24,15 +24,13 @@ export const postItem = async (userId: string, item: Omit<Item, 'id'>) => {
   return response
 }
 
-
-export const X_TO_DO_XpatchItem = async (userId: string, item: Item) => {
-  
+export const patchItem = async (userId: string, item: Item) => {
   const url = `${db}/${document}/${userId}/items/${item.id}/.json`
-  const response = await axios.post(url, item)
+  const response = await axios.patch(url, item)
   return response
 }
 
-export const patchItemPortion = async (userId: string, item: Item) => {
+export const putItemPortion = async (userId: string, item: Item) => {
   const url = `${db}/${document}/${userId}/items/${item.id}/portions/.json`
   const response = await axios.put(url, item.portions.toString())
 }

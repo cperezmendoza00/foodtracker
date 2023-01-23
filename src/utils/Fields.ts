@@ -19,7 +19,7 @@ export const validateFields = (fields: validateField[]) => {
         error = true
       }
     } else {
-      if (field.type === 'numeric' && !Number(valueTrimmed)) {
+      if (field.type === 'numeric' && Number(valueTrimmed) < 0) {
         field.errorSetter(true)
         error = true
       } else {

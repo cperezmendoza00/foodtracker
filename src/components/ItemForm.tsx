@@ -5,22 +5,24 @@ import { Card, TextInput, Button, ActivityIndicator, MD2Colors } from 'react-nat
 import { globalStyles } from '../ui/globalStyles'
 import { LocaleContext } from '../utils/LocaleContext';
 import { Item } from '../types'
-import { postItem } from '../utils/http'
-import { addItem } from '../store/items'
-import { hideModal } from '../store/modal'
+import { patchItem, postItem } from '../utils/http'
+import { updateItem, addItem } from '../store/items'
+import { hideItemModal } from '../store/itemModal'
 import { validateFields } from '../utils/Fields'
 import { showSnackbar } from '../store/snackbar';
 
 
-export default function NewItemForm() {
+export default function ItemForm() {
 
   const items = useSelector((state: any) => state.items.data)
-  const [name, setName] = useState<string>('');
-  const [details, setDetails] = useState<string>('');
-  const [gramsPerPortion, setGramsPerPortion] = useState<string>('');
-  const [protein, setProtein] = useState<string>('');
-  const [fat, setFat] = useState<string>('');
-  const [carb, setCarb] = useState<string>('');
+  const item = useSelector((state: { itemModal: { item: Item } }) => state.itemModal.item)
+  const [name, setName] = useState<string>(item?.name.toString() || '')
+  const [details, setDetails] = useState<string>(item?.details.toString() || '')
+  const [gramsPerPortion, setGramsPerPortion] = useState<string>(item?.gramsPerPortion.toString() || '')
+  const [protein, setProtein] = useState<string>(item?.info?.protein.toString() || '')
+  const [fat, setFat] = useState<string>(item?.info?.fat.toString() || '')
+  const [carb, setCarb] = useState<string>(item?.info?.carb.toString() || '')
+
   const appData = React.useContext(LocaleContext);
   const dispatch = useDispatch()
 
@@ -35,8 +37,6 @@ export default function NewItemForm() {
 
 
 
-
-
   const onSaveHandler = async () => {
 
     const errorFromFields: boolean = validateFields([
@@ -46,7 +46,7 @@ export default function NewItemForm() {
         required: true,
         errorSetter: setNameError,
         fieldSetter: setName,
-        
+
       }, {
         value: details,
         type: 'text',
@@ -82,45 +82,67 @@ export default function NewItemForm() {
 
     if (!errorFromFields) {
       setLoading(true)
-      const item: Omit<Item, 'id'> = {
-        order: items.length + 1,
-        name,
-        details,
-        portions: 0,
-        gramsPerPortion: Number(gramsPerPortion),
-        info: {
-          protein: Number(protein),
-          fat: Number(fat),
-          carb: Number(carb),
+      if (item) {
+        try {
+          const updatedItem: Item = {
+            ...item,
+            name,
+            details,
+            gramsPerPortion: Number(gramsPerPortion),
+            info: {
+              protein: Number(protein),
+              fat: Number(fat),
+              carb: Number(carb),
+            }
+          }
+
+          await patchItem('-NKUMEKM4dGs1DgPfwQe', updatedItem)
+          dispatch(updateItem(updatedItem))
+          dispatch(hideItemModal())
+        } catch (e) {
+          dispatch(showSnackbar(appData.errorPatchingItem))
+          setLoading(false)
         }
-      }
-      try {
-        const { data } = await postItem('-NKUMEKM4dGs1DgPfwQe', item)
-        dispatch(addItem({
-          ...item,
-          id: data.name,
-        }))
-        dispatch(hideModal())
-      } catch (e) {
-        dispatch(showSnackbar(appData.errorAddingItem))
-        setLoading(false)
+      } else {
+        try {
+          const newItem: Omit<Item, 'id'> = {
+            order: items.length + 1,
+            name,
+            details,
+            portions: 0,
+            gramsPerPortion: Number(gramsPerPortion),
+            info: {
+              protein: Number(protein),
+              fat: Number(fat),
+              carb: Number(carb),
+            }
+          }
+
+          const result = await postItem('-NKUMEKM4dGs1DgPfwQe', newItem)
+
+          dispatch(addItem({ ...newItem, id: result.data.name }))
+          dispatch(hideItemModal())
+        } catch (e) {
+          dispatch(showSnackbar(appData.errorAddingItem))
+          setLoading(false)
+        }
       }
     }
   }
 
   const onCancelHandler = () => {
-    dispatch(hideModal())
+    dispatch(hideItemModal())
   }
 
   return (
     <View style={globalStyles.container}>
-      <Card.Title title={appData.addItemForm.title} />
+      <Card.Title title={appData.itemForm.title} />
       <View style={styles.section}>
         <View>
           <TextInput
             mode='outlined'
             style={globalStyles.TextInput}
-            label={appData.addItemForm.name}
+            label={appData.itemForm.name}
             error={nameError}
             value={name}
             disabled={loading}
@@ -134,7 +156,7 @@ export default function NewItemForm() {
           <TextInput
             mode='outlined'
             style={globalStyles.TextInput}
-            label={appData.addItemForm.description}
+            label={appData.itemForm.description}
             error={descriptionError}
             value={details}
             disabled={loading}
@@ -148,7 +170,7 @@ export default function NewItemForm() {
           <TextInput
             mode='outlined'
             style={globalStyles.TextInput}
-            label={appData.addItemForm.gramsPerPortion}
+            label={appData.itemForm.gramsPerPortion}
             error={gramsPerPortionError}
             value={gramsPerPortion}
             disabled={loading}

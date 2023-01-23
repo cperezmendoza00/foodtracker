@@ -66,6 +66,19 @@ const store = createSlice({
     addItem: (state, action) => {
       state.data.push(action.payload)
     },
+    updateItem: (state, action) => {
+      state.data.map(item => {
+        if (item.id === action.payload.id) {
+          item.name = action.payload.name
+          item.details = action.payload.details
+          item.gramsPerPortion = action.payload.gramsPerPortion
+          item.info.protein = action.payload.info.protein
+          item.info.fat = action.payload.info.fat
+          item.info.carb = action.payload.info.carb
+        }
+        return item
+      })
+    },
     updateItems: (state, action) => {
       state.data = action.payload
     },
@@ -83,6 +96,7 @@ const store = createSlice({
 export const {
   updatePortion,
   updateItems,
+  updateItem,
   addItem
 } = store.actions
 export default store.reducer

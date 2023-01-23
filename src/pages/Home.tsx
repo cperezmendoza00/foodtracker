@@ -12,7 +12,7 @@ import { mapItemsFromRequest } from '../utils/Mappers'
 import { updateItems } from '../store/items'
 import ModalComponent from '../components/ModalComponent'
 import ItemForm from '../components/ItemForm'
-import { showModal } from '../store/modal';
+import { showNewItemModal } from '../store/itemModal';
 import { showSnackbar, hideSnackbar } from '../store/snackbar';
 import { updateUserInfo } from '../store/userInfo';
 
@@ -30,12 +30,12 @@ export default function Home({ navigation }: Props) {
   const appData = React.useContext(LocaleContext);
   const dispatch = useDispatch()
   const items: Item[] = useSelector((state: any) => state.items.data)
-  const modalVisible: boolean = useSelector((state: any) => state.modal.visible)
+  const modalVisible: boolean = useSelector((state: any) => state.itemModal.visible)
   const snackbarVisible: boolean = useSelector((state: any) => state.snackbar.visible)
   const snackbarText: string = useSelector((state: any) => state.snackbar.text)
 
   const addItemHandler = () => {
-    dispatch(showModal())
+    dispatch(showNewItemModal())
   }
   useEffect(() => {
     const getItems = async () => {

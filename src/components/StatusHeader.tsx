@@ -5,6 +5,7 @@ import { Text, IconButton } from 'react-native-paper';
 import { globalStyles } from '../ui/globalStyles'
 import { LocaleContext } from '../utils/LocaleContext';
 import { Item, UserInfo } from '../types'
+import { getCalories } from '../utils/Numbers';
 
 
 export default function StatusHeader() {
@@ -23,7 +24,7 @@ export default function StatusHeader() {
     c = c + (item.portions * item.info.carb)
   })
 
-  k = ((p * 4) + (f * 4) + (c * 4))
+  k = getCalories(p, f, c)
   return (
     <View style={[styles.header, globalStyles.row]}>
       <View style={styles.headerStatus}>

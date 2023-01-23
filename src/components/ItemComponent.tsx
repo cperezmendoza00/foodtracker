@@ -6,9 +6,9 @@ import { Item, IncrementPortion, ChangePortion } from '../types';
 import { globalStyles } from '../ui/globalStyles'
 import { LocaleContext } from '../utils/LocaleContext';
 import { updatePortion } from '../store/items';
-import { getCalories, roundNumber } from '../utils/Numbers'
-import { patchItemPortion } from '../utils/http';
-import { showModal } from '../store/modal';
+import { getCaloriesFromItem, roundNumber } from '../utils/Numbers'
+import { putItemPortion } from '../utils/http';
+import { showItemModal } from '../store/itemModal';
 import { showSnackbar } from '../store/snackbar';
 interface Props {
   item: Item
@@ -46,8 +46,8 @@ export default function ItemComponent({ item }: Props) {
           value: newValue,
         }
         try {
-          setLoading(true) 
-          await patchItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: newValue })
+          setLoading(true)
+          await putItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: newValue })
           setPortionsInitialValue(newValue)
           //SLEEP
           //await new Promise(r => setTimeout(r, 2000));
@@ -61,11 +61,11 @@ export default function ItemComponent({ item }: Props) {
       }
 
 
-      
 
 
 
-      
+
+
 
     }
   }
@@ -100,7 +100,7 @@ export default function ItemComponent({ item }: Props) {
           //SLEEP
           //await new Promise(r => setTimeout(r, 3000));
           //throw new Error('errror')
-          await patchItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: roundedPortions })
+          await putItemPortion('-NKUMEKM4dGs1DgPfwQe', { ...item, portions: roundedPortions })
           setPortionsInitialValue(roundedPortions)
           setLoading(false)
         } catch (e) {
@@ -123,12 +123,11 @@ export default function ItemComponent({ item }: Props) {
   return (
     <View style={styles.item}>
       <View style={[globalStyles.row]} >
-
         <TouchableRipple
           style={styles.itemDetails}
-          onPress={() => { console.log('pressed') }}
-          onLongPress={() => { console.log('longPressed', item); dispatch(showModal()) }}
-          rippleColor="rgba(0, 0, 0, .32)"
+          onPress={() => { }}
+          onLongPress={() => { dispatch(showItemModal(item)) }}
+          //rippleColor="rgba(0, 0, 0, .32)"
         >
           <View>
             <View>
@@ -154,7 +153,7 @@ export default function ItemComponent({ item }: Props) {
 
               <View style={[styles.macroDetails]}>
                 <View><Text variant='labelSmall'>{appData.config.caloriesI}</Text></View>
-                <View><Text variant='bodySmall'>{getCalories(item).toString()}</Text></View>
+                <View><Text variant='bodySmall'>{getCaloriesFromItem(item).toString()}</Text></View>
               </View>
             </View>
           </View>
